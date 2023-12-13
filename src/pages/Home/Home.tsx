@@ -1,17 +1,27 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import Lottie from "lottie-react";
-import hiringAnimation from '../../assets/lotties/hiring-lottie.json'
+import { Search, JobList } from '../../components';
 
 const Home = () => {
+  const [hasSearchResults, setHasSearchResults] = useState(false);
+
+  // useEffect(() => {
+  //   setTimeout(() => setIsSearching(false), 2000)
+  // }, []);
+
+  const handleSearchResults = () => {
+    alert('got here')
+  }
+
   return (
-    <main className='w-screen h-screen flex-col justify-center'>
-      <h1 className='text-lg'>Looking for a new career?</h1>
-      <Lottie 
-        animationData={hiringAnimation} 
-        loop={true} 
-        style={{ height: '80%', width: '50%'}}
-        />
-    </main>
+    <div className='p-16 content-center w-screen h-screen flex flex-col items-center content-center'>
+      <h1 className='text-6xl'>Career Hub </h1>
+      <h4 className='py-1'>Looking for a new career?</h4>
+      <Search onSubmit={handleSearchResults}/>
+      {hasSearchResults && <JobList />}
+
+    </div>
   )
 }
 
