@@ -4,7 +4,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1></h1>
+      <h1 className='text-3xl font-bold '>JOB SEARCH</h1>
     </div>
   )
 }
