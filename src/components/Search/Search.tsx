@@ -32,9 +32,17 @@ const Search = (props: TSCProps) => {
 
   return (
     <div className='py-2 flex flex-col items-center content-center'>
-        <div className='py-1'>
-            <input onChange={handleOnChange} type="text" value={searchParam?.searchTerm} name="searchTerm" placeholder='Job Tile' />
-            <input onChange={handleOnChange} type="text" value={searchParam?.location} name="location"placeholder='City, State or zip code' />
+        <div className='py-1 min-w-max gap-5 flex content-center items-content justify-center h-12'>
+            <input className='rounded-3xl px-5 bg-input text-sm font-medium min-w-[500px] w-[33vw]'
+                onChange={handleOnChange} type="text"
+                value={searchParam?.searchTerm} 
+                name="searchTerm" 
+                placeholder='job title, keywords or company name' />
+            <input className='rounded-3xl px-5 bg-input text-sm font-medium min-w-[300px]' 
+                onChange={handleOnChange} type="text" 
+                value={searchParam?.location} 
+                name="location"
+                placeholder='city, state, or zip code' />
             <button onClick={handleSearch}>search</button>
         </div>
         <div>

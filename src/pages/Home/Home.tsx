@@ -16,8 +16,8 @@ const Home = () => {
 
   return (
     <div className='p-16 content-center w-screen h-screen flex flex-col items-center content-center'>
-      <h1 className='text-6xl'>Career Hub </h1>
-      <h4 className='py-1'>Looking for a new career?</h4>
+      <h1 className='text-6xl text-lightskyblue'>Career Hub </h1>
+      <h4 className='py-1 text-zinc-300'>Looking for a new career?</h4>
       <Search onSubmit={handleSearchResults}/>
       {hasSearchResults && <JobList />}
 
