@@ -10,7 +10,7 @@ export default {
     extend: {
       colors: {
         primary: { ...colors.emerald, DEFAULT: colors.red[500]},
-        'input': '#2b2e3e',
+        'input': '#f0f0f030',
         'lightskyblue': 'lightskyblue',
         body: colors.white
       }
