@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 import { TUseSearch } from "../types/search";
 
-
 const useSearch = (searchObj: TUseSearch) => {
-
+  alert('hee')
     const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState<unknown>(null);
     const [data, setData] = useState([]);
