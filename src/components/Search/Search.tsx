@@ -4,7 +4,7 @@ import { TSearchParam, TSCProps } from '../../types/search';
 // import useSearch from '../../hooks/useSearch';
 import axios, { AxiosRequestConfig } from "axios";
 import Lottie from "lottie-react";
-import {hiringAnimation, searchAnimation } from '../../assets/index';
+import {hiringAnimation, searchAnimation, noResults } from '../../assets/index';
 import { API_BASE_URL, API_HOST, API_KEY } from '../../constants/api-credentials';
 import { SearchResponse, Job } from '../../types/searchResults';
 import {JobList} from '../index';
@@ -19,6 +19,7 @@ enum SearchType {
 const Search = (props: TSCProps) => {
   const termInputRef = useRef<HTMLInputElement>(null);
   const locationInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [searchParam, setSearchParam] = useState<TSearchParam>();
   const [isSearching, setIsSearching] = useState(false);
   const [hasResults, setHasResults] = useState(false);
@@ -32,25 +33,32 @@ const Search = (props: TSCProps) => {
       'x-rapidapi-key': API_KEY,
       'x-rapidapi-host': API_HOST
     },
-    params: { query: searchParam?.searchTerm }
+    params: { query: `${searchParam?.searchTerm} ${searchParam?.location || ''}` }
   };
 
 const getSearchResults = async () => {
-  setIsSearching(true);
-  try {
-    const res = await axios.get(`${API_BASE_URL}${SearchType.Default}`, options);
-    setData(res.data.data);
-    setTimeout(() => {
+  if (!!options.params.query) {
+    setIsSearching(true);
+    try {
+      const res = await axios.get(`${API_BASE_URL}${SearchType.Default}`, options);
+      setData(res.data.data);
+      setError(null);
+      // setTimeout(() => {
+      //   setIsSearching(false);
+      //   setHasResults(true);
+      // }, 1000);
+      setIsSearching(false);
+      setHasResults(true);
+      
+    } catch(error: unknown) {
+      setError(error);
+      setHasResults(false);
+      setData([]);
+      console.log(`Error searching :::: ${error}`);
+    } finally {
       setIsSearching(false);
       props.onSubmit({hasResults, data, error})
-      setHasResults(true);
-    }, 1000);
-
-  } catch(error: unknown) {
-    setError(error);
-    console.log(`Error searching :::: ${error}`);
-  } finally {
-    setIsSearching(false);
+    }
   }
 }
 
@@ -58,16 +66,18 @@ const getSearchResults = async () => {
   const getLoader = () => {
     return (
       <>
-        <Lottie 
-          animationData={isSearching ? searchAnimation  : hiringAnimation} 
-          loop={true} 
-          style={{ width: '70%', margin: '3rem auto'}}
-        /> 
+        { hasResults ? <></> :
+          <Lottie 
+            animationData={isSearching ? searchAnimation  : (hasResults && data.length === 0 || !!error) ? noResults : hiringAnimation} 
+            loop={true} 
+            style={{ width: '70%', margin: '3rem auto'}}
+          /> 
+        }
       </>
     )
   }
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const searchParam: TSearchParam = {
       searchTerm: termInputRef?.current?.value || '',
@@ -75,27 +85,28 @@ const getSearchResults = async () => {
     };
     setSearchParam(searchParam);
 
-    if (!!searchParam.searchTerm) await getSearchResults()
+    if (!!searchParam.searchTerm) await getSearchResults();
+    formRef.current?.reset();
   }
 
   return (
     <div className='py-2 flex flex-col items-center content-center'>
-        <form className='min-w-max gap-5 flex content-center items-content justify-center h-12'>
-            <input className='rounded-3xl px-5 bg-input text-sm font-medium min-w-[500px] w-[33vw] placeholder:text-gray-300 placeholder:italic shadow-lg shadow-indigo-500/50'
-              required
+        <form ref={formRef} className='min-w-max gap-5 flex content-center items-content justify-center h-12'>
+            <input className='rounded-3xl px-5 bg-input text-sm font-medium min-w-[500px] w-[33vw] placeholder:text-gray-400 shadow-lg shadow-indigo-500/50'
               ref={termInputRef}
               type="text"
               name="searchTerm" 
+              required={true} pattern="[A-Za-z0-9]{1,20}"
               placeholder='job title, keywords or company name' />
-            <input className='rounded-3xl px-5 bg-input text-sm font-medium min-w-[300px] placeholder:text-gray-300 placeholder:italic shadow-lg shadow-indigo-500/50' 
+            <input className='rounded-3xl px-5 bg-input text-sm font-medium min-w-[300px] placeholder:text-gray-400 shadow-lg shadow-indigo-500/50 focus-none' 
               ref={locationInputRef}
               type="text" 
               name="location"
               placeholder='city, state, or zip code' />
-            <button onClick={handleSearch}>search</button>
+            <button type='submit' onClick={handleSearch}>search</button>
         </form>
         <div>
-            { !hasResults && getLoader() }
+            { getLoader() }
         </div>
     </div>
   )

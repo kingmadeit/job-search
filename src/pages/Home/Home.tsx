@@ -15,6 +15,7 @@ const Home = () => {
     setHasSearchResults(hasResults)
     setJobs(data);
     setError(error);
+    console.log(error)
   }
 
   return (
@@ -22,8 +23,8 @@ const Home = () => {
       <h1 className='text-6xl text-lightskyblue'>Career Hub </h1>
       <h4 className='py-1 text-zinc-300'>Looking for a new career?</h4>
       <Search onSubmit={handleSearchResults}/>
-      {hasSearchResults && <JobList jobs={jobs}/>}
-      {!!error && <p>Error with search</p>}
+      {hasSearchResults && jobs.length === 0 && <JobList jobs={jobs}/>}
+      { (!hasSearchResults && !!error) && <p>Error with search</p>}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Job } from '../../types/searchResults'
+import JobCard from '../JobCard/JobCard';
 
 const JobList = (props: {jobs: Job[] | []}) => {
   const { jobs } = props;
@@ -8,14 +9,8 @@ const JobList = (props: {jobs: Job[] | []}) => {
       <ul className='flex flex-col gap-20 items-start'>
         {jobs.map((job) => {
           return (
-            <li>
-              <a href="">
-                <div>
-                  <h2>{job.employer_name}</h2>
-                  <h2>{job.employer_website}</h2>
-                  <h2>{job.job_city}</h2>
-                </div>
-              </a>
+            <li key={job.job_id}>
+              <JobCard job={job} />
             </li>
           )
         })}

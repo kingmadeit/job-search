@@ -13,7 +13,7 @@ export interface SearchResults {
 }
 
 export interface Job {
- apply_options:                        ApplyOption[];
+ apply_options?:                        ApplyOption[];
  employer_company_type?:                null | string;
  employer_logo?:                        null | string;
  employer_name?:                        string;
