@@ -12,7 +12,6 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   /* background-color: #242424; */
-  background: linear-gradient(45deg, #750f6cc4, #4294aab0);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,4 +28,5 @@
 
 html, body {
   width: 100%;
+  background: linear-gradient(45deg, #750f6cc4, #4294aab0);
 }

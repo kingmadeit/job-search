@@ -17,17 +17,13 @@ enum SearchType {
 
 
 const Search = (props: TSCProps) => {
-  const [searchParam, setSearchParam] = useState<TSearchParam>();
   const termInputRef = useRef<HTMLInputElement>(null);
   const locationInputRef = useRef<HTMLInputElement>(null);
-  // const { isSearching, data, error, retrySearch } = useSearch({
-  //   endpoint: 'search', 
-  //   params: { 
-  //       query: searchParam?.searchTerm as string
-  //   }})
+  const [searchParam, setSearchParam] = useState<TSearchParam>();
   const [isSearching, setIsSearching] = useState(false);
+  const [hasResults, setHasResults] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [data, setData] = useState<Job[] | []>([]);
+  const [data, setData] = useState<Job[]>([]);
 
   const options: AxiosRequestConfig  = {
     method: 'GET',
@@ -42,15 +38,14 @@ const Search = (props: TSCProps) => {
 const getSearchResults = async () => {
   setIsSearching(true);
   try {
-    const response = await axios.get(`${API_BASE_URL}${SearchType.Default}`, options);
-    setData(response.data.data as Job[] | []);
-    setTimeout(() => setIsSearching(false), 3000);
-    console.log(`DATA::::${data}`);
-    console.table({
-      data: response.data,
-      dataData: response.data.data,
-      res: response
-    })
+    const res = await axios.get(`${API_BASE_URL}${SearchType.Default}`, options);
+    setData(res.data.data);
+    setTimeout(() => {
+      setIsSearching(false);
+      props.onSubmit({hasResults, data, error})
+      setHasResults(true);
+    }, 1000);
+
   } catch(error: unknown) {
     setError(error);
     console.log(`Error searching :::: ${error}`);
@@ -81,11 +76,6 @@ const getSearchResults = async () => {
     setSearchParam(searchParam);
 
     if (!!searchParam.searchTerm) await getSearchResults()
-    // const { isSearching, data, error, retrySearch } = useSearch({
-    //     endpoint: 'search', 
-    //     params: { 
-    //         query: searchParam?.searchTerm as string
-    //     }})
   }
 
   return (
@@ -105,9 +95,8 @@ const getSearchResults = async () => {
             <button onClick={handleSearch}>search</button>
         </form>
         <div>
-            { getLoader() }
+            { !hasResults && getLoader() }
         </div>
-        {data.length > 0 && <JobList {...data} />}
     </div>
   )
 }
