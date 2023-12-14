@@ -1,5 +1,5 @@
 import React from 'react'
-import { Job } from '../../types/searchResults'
+import { Job } from '../types/searchResults'
 
 const JobCard = (props: {job: Job }) => {
   const { job } = props;

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Job } from '../../types/searchResults'
-import JobCard from '../JobCard/JobCard';
+import { Job } from '../types/searchResults'
+import {JobCard} from './';
 
 const JobList = (props: {jobs: Job[] | []}) => {
   const { jobs } = props;

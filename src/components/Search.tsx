@@ -1,13 +1,12 @@
 import React from 'react';
 import {useState, useRef} from 'react'
-import { TSearchParam, TSCProps } from '../../types/search';
+import { TSearchParam, TSCProps } from '../types/search';
 // import useSearch from '../../hooks/useSearch';
 import axios, { AxiosRequestConfig } from "axios";
 import Lottie from "lottie-react";
-import {hiringAnimation, searchAnimation, noResults } from '../../assets/index';
-import { API_BASE_URL, API_HOST, API_KEY } from '../../constants/api-credentials';
-import { SearchResponse, Job } from '../../types/searchResults';
-import {JobList} from '../index';
+import {hiringAnimation, searchAnimation, noResults } from '../assets/index';
+import { API_BASE_URL, API_HOST, API_KEY } from '../constants/api-credentials';
+import { SearchResponse, Job } from '../types/searchResults';
 
 enum SearchType {
   Default = 'search',
