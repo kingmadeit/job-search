@@ -1,16 +1,17 @@
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import {Home, JobDetails} from './pages/index'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import {Home, JobDetails, Four04} from './pages/index'
 
 function App() {
 
   return (
-    <BrowserRouter>
-    <Routes>
-        <Route index element={<Home />} />
-        <Route path='job-details' element={<JobDetails />} />
-    </Routes>
-  </BrowserRouter>
+    <Router>
+      <Routes>
+          <Route index  element={<Home />} />
+          <Route path='job-details' element={<JobDetails />} />
+          <Route element={<Four04 />} />
+      </Routes>
+  </Router>
   )
 }
 

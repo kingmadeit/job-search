@@ -6,7 +6,7 @@ export type TSearchParam = {
 };
 
 export type TSCProps = {
-    onSubmit: Function
+    onSubmit: (param: TSearchParam)
 };
 
 type TiTles = 'FULLTIME' | 'CONTRACTOR' | 'PARTTIME' | 'INTERN';
