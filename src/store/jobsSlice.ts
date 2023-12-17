@@ -56,12 +56,13 @@ const jobsSlice = createSlice({
       /**
        *  internal server errors are fullfiled here with payload as string
        */
-      if (payload.includes('failed')) {
+      if (typeof payload === 'string' && payload.includes('failed')) {
         state.status = 'failed';
         state.error = payload;
       } else {
         state.status = 'succeeded';
         state.jobs = payload.data; // here payload has pagination info
+        state.error = undefined;
       }
     })
     .addCase(getJobs.rejected, (state, action) => {

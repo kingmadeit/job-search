@@ -23,5 +23,4 @@ const searchSlice = createSlice({
 });
 
 export const { updateSearchParams, updateSearchTerm, updateLocation } = searchSlice.actions;
-export const getSearchParams = (state: TSearchParam) => state;
 export default searchSlice.reducer;

@@ -1,10 +1,11 @@
 import Lottie from "lottie-react";
-import { Search, JobList } from '../../components';
+import { Search, JobList, NoResultsFound } from '../../components';
 import { getJobs } from '../../store/jobsSlice';
-import { hiringAnimation,searchAnimation, noResults } from '../../assets/index';
+import { hiringAnimation,searchAnimation } from '../../assets/index';
 import { TSearchParam } from '../../types/search';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { SearchParameters } from "../../types/searchResults";
+import toast from 'react-hot-toast';
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -14,36 +15,39 @@ const Home = () => {
   const jobsFound = useAppSelector(state => state.jobs.jobs);
 
   const getContent = () => {
-    return (
-      <>
-        { apiStatus === 'succeeded' && jobsFound?.length ? <JobList jobs={jobsFound} /> :
-          <Lottie animationData={
-              apiStatus === 'loading' ? searchAnimation  :
-              apiStatus === 'failed' || !!apiError ? noResults : 
-              hiringAnimation
-            } 
-            loop={true} 
-            style={{ width: '70%', margin: '3rem auto'}}
-          /> 
-        }
-      </>
-    )
+    let content;
+    if (apiStatus === 'succeeded' && jobsFound?.length) {
+      content = <JobList jobs={jobsFound} />;
+    } else if(apiStatus === 'failed' || !!apiError) {
+      content = <NoResultsFound />;
+    } else {
+      const isSearching = apiStatus === 'loading';
+      // const isSearching = !!(searchParams.searchTerm || searchParams.location) && apiStatus === 'loading';
+      content = <Lottie animationData={isSearching ? searchAnimation : hiringAnimation } 
+        loop={true} 
+        style={{ width: '70%', margin: '3rem auto'}}
+      /> 
+    }
+    return content;
   }
 
   const buildParams = (params: TSearchParam) =>  {
-    if (!params.location && !params.searchTerm) return console.error('Home.tsx/buildParams() ::: nothing provided to build');
-    return { query: `${params.searchTerm}, ${params.location}` }
+    return { query: `${params?.searchTerm} ${params?.location}` }
   }
 
   const handleSearch = async (_params: TSearchParam) => {
     const params: SearchParameters = buildParams(_params) as SearchParameters;
-    if (apiStatus === 'idle') {
+    if (!!params.query.trim() && apiStatus === 'idle') {
       try {
         await dispatch(getJobs(params));
         console.table({apiError, apiStatus})
       } catch (error) {
         console.log(error)
       }
+    } else if(apiStatus === 'idle' ) {
+      toast.error('You must enter a search term');
+      setTimeout(() => toast.success('what are you looking for?'), 1300);
+      return console.error('Home.tsx/buildParams() ::: nothing provided to build');
     } 
   }
 

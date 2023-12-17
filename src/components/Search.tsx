@@ -2,9 +2,8 @@ import React from 'react';
 import {useState, useRef} from 'react'
 import { TSearchParam, TSCProps } from '../types/search';
 import { useAppDispatch } from '../hooks/hooks';
-import { getSearchParams, updateSearchParams } from '../store/searchSlice';
+import { updateSearchParams } from '../store/searchSlice';
 import { useSelector } from 'react-redux';
-
 
 const Search = (props: TSCProps) => {
   const termInputRef = useRef<HTMLInputElement>(null);
@@ -13,7 +12,7 @@ const Search = (props: TSCProps) => {
   const [searchParam, setSearchParam] = useState<TSearchParam>();
 
   const dispatch = useAppDispatch();
-
+  
   const handleSearch = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const searchParam: TSearchParam = {
@@ -21,11 +20,14 @@ const Search = (props: TSCProps) => {
       location: locationInputRef?.current?.value || ''
     };
 
-    if (!!searchParam.searchTerm) {
+    // I dont think search component should be in charge of this?
+    // if (!!searchParam.searchTerm) {
+      //   await dispatch(updateSearchParams(searchParam));
+      //   props.onSubmit(searchParam);
+      //   formRef.current?.reset();
+      // } 
       await dispatch(updateSearchParams(searchParam));
       props.onSubmit(searchParam);
-      formRef.current?.reset();
-    } 
   }
 
   return (
