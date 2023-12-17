@@ -1,6 +1,9 @@
 import React from 'react';
 import {useState, useRef} from 'react'
 import { TSearchParam, TSCProps } from '../types/search';
+import { useAppDispatch } from '../hooks/hooks';
+import { getSearchParams, updateSearchParams } from '../store/searchSlice';
+import { useSelector } from 'react-redux';
 
 
 const Search = (props: TSCProps) => {
@@ -9,14 +12,18 @@ const Search = (props: TSCProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [searchParam, setSearchParam] = useState<TSearchParam>();
 
+  const dispatch = useAppDispatch();
+
   const handleSearch = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const searchParam: TSearchParam = {
       searchTerm: termInputRef?.current?.value || '',
       location: locationInputRef?.current?.value || ''
     };
-    setSearchParam(searchParam);
+    // TODO: you might have to nuke this later
+    // setSearchParam(searchParam);
 
+    dispatch(updateSearchParams(searchParam));
     if (!!searchParam.searchTerm) props.onSubmit(searchParam);
     formRef.current?.reset();
   }

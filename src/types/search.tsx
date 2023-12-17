@@ -1,13 +1,13 @@
 import { UnionConcat } from "./union";
 
 export type TSearchParam = {
-    searchTerm: string,
-    location: string
+    searchTerm: string | undefined,
+    location: string | 'remote' | undefined  
 };
 
 export type TSCProps = {
-    onSubmit: (param: TSearchParam)
-};
+    onSubmit: (param: TSearchParam) => void
+}
 
 type TiTles = 'FULLTIME' | 'CONTRACTOR' | 'PARTTIME' | 'INTERN';
 type TJTUnion = UnionConcat<TiTles, ','>;

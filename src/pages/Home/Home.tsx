@@ -1,36 +1,30 @@
 import React, { useEffect } from 'react';
-import { useState } from 'react';
 import Lottie from "lottie-react";
 import { Search, JobList } from '../../components';
-import { Job, SearchResults } from '../../types/searchResults';
-import { useSelector, useDispatch } from 'react-redux';
-import { allJobs, getJobs, getJobsError, getJobsStatus } from '../../store/jobs/jobs';
-import {hiringAnimation, searchAnimation, noResults } from '../assets/index';
+import { getJobs } from '../../store/jobsSlice';
+import { hiringAnimation,searchAnimation, noResults } from '../../assets/index';
 import { TSearchParam } from '../../types/search';
-
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const _jobs = useSelector(allJobs);
-  const _jobsStatus = useSelector(getJobsStatus);
-  const _jobsError = useSelector(getJobsError);
+  const dispatch = useAppDispatch();
+  const apiError = useAppSelector(state => state.jobs.error);
+  const apiStatus = useAppSelector(state => state.jobs.status);
+  const searchParams = useAppSelector(state => state.search);
+  const jobsFound = useAppSelector(state => state.jobs.jobs);
 
   useEffect(() => {
-    if (_jobsStatus === 'idle') dispatch(getJobs())
-  }, [_jobsStatus, dispatch]);
-
-  switch (_jobsStatus) {
-    case 'loading':
-  }
+    if (apiStatus === 'idle') dispatch(getJobs(buildParams(searchParams)));
+  }, [apiStatus, dispatch]);
 
 
   const getContent = () => {
     return (
       <>
-        { _jobsStatus === 'succeeded' ? <JobList jobs={jobs} /> :
+        { apiStatus === 'succeeded' ? <JobList jobs={jobsFound} /> :
           <Lottie animationData={
-              _jobsStatus === 'loading' ? searchAnimation  :
-              _jobsStatus === 'failed' || !! _jobsError ? noResults : 
+              apiStatus === 'loading' ? searchAnimation  :
+              apiStatus === 'failed' || !! apiError ? noResults : 
               hiringAnimation
             } 
             loop={true} 
@@ -41,17 +35,16 @@ const Home = () => {
     )
   }
 
-  const [hasSearchResults, setHasSearchResults] = useState(false);
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [error, setError] = useState<unknown>(null);
+  const buildParams = (params: TSearchParam) =>  {
+    return { query: `${params.searchTerm}, ${params.location}` }
+  }
 
-  const handleSearch = (_params: TSearchParam) => {
-    const params = {
-      query: `${_params.searchTerm}, ${_params.location}`
-    }
-    if (_jobsStatus === 'idle') {
+  const handleSearch = async (_params: TSearchParam) => {
+    const params = buildParams(_params);
+    if (apiStatus === 'idle') {
       try {
-        dispatch(getJobs(params)) 
+        await dispatch(getJobs(params));
+        console.table({apiError, apiStatus})
       } catch (error) {
         console.log(error)
       }
