@@ -1,7 +1,7 @@
 
 export interface SearchResponse<T> {
  data:       T[];
- parameters: Parameters;
+ parameters: SearchParameters;
  request_id: string;
  status:     string;
 }
@@ -109,8 +109,8 @@ export enum JobState {
  Tx = "TX",
 }
 
-export interface Parameters {
- num_pages: number;
- page:      number;
+export interface SearchParameters {
+ num_pages?: number;
+ page?:      number;
  query:     string;
 }

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { SEARCH_API_URL, API_HOST, API_KEY } from '../constants/api-credentials';
 import axios, { AxiosRequestConfig } from "axios";
-import { Job } from "../types/searchResults";
+import { Job, SearchParameters } from "../types/searchResults";
 import { updateSearchParams } from "./searchSlice";
 
 interface JobsSliceState {
@@ -19,10 +19,8 @@ let options: AxiosRequestConfig  = {
   },
 };
 
-export const getJobs = createAsyncThunk('jobs/getJobs', async (params: {query: string}) => {
-  // params: { query: `${searchParam?.searchTerm} ${searchParam?.location || ''}` }
+export const getJobs = createAsyncThunk('jobs/getJobs', async (params: SearchParameters) => {
   try {
-    debugger
     const res = await axios.get(`${SEARCH_API_URL}`, {...options, params});
     return res.data;
   } catch (error: any) {
@@ -48,13 +46,23 @@ const jobsSlice = createSlice({
     builder
     .addCase(updateSearchParams.type, (state, action) => {
       console.log(`Im in the job slice and the action is ::: ${action.type}`)
+      state.status = 'idle';
     })
     .addCase(getJobs.pending, (state, action) => {
       state.status = 'loading';
     })
     .addCase(getJobs.fulfilled, (state, action) => {
-      state.status = 'succeeded';
-      state.jobs = action.payload.data; // here payload has pagination info
+      const { payload } = action;
+      /**
+       *  internal server errors are fullfiled here with payload as string
+       */
+      if (payload.includes('failed')) {
+        state.status = 'failed';
+        state.error = payload;
+      } else {
+        state.status = 'succeeded';
+        state.jobs = payload.data; // here payload has pagination info
+      }
     })
     .addCase(getJobs.rejected, (state, action) => {
       state.status = 'failed';
@@ -63,8 +71,4 @@ const jobsSlice = createSlice({
   }
 });
 
-// export const { getJobs } = jobsSlice.actions;
-export const allJobs = (state: JobsSliceState) => state.jobs;
-export const getJobsStatus = (state: JobsSliceState) => state.status
-export const getJobsError = (state: JobsSliceState) => state.error
 export default jobsSlice.reducer
