@@ -6,7 +6,7 @@ const JobList = (props: {jobs: Job[] | []}) => {
   const { jobs } = props;
   return (
     <div>
-      <ul className='w-screen flex-wrap gap-8 items-center content-center flex justify-center py-16'>
+      <ul className='w-screen flex-wrap gap-8 items-start content-center flex justify-center py-16'>
         {jobs.map((job) => {
           return (
             <li key={job.job_id}>
