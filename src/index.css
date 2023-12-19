@@ -30,3 +30,9 @@ html, body {
   width: 100%;
   background: linear-gradient(45deg, #750f6cc4, #4294aab0);
 }
+
+body {
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,20 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Job } from '../types/searchResults'
-import {JobCard} from './';
+import {JobCard, JobDetailCard} from './';
 
-const JobList = (props: {jobs: Job[] | []}) => {
-  const { jobs } = props;
+const JobList = ({jobs}: {jobs: Job[] | []}) => {
+
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  
+  const handleClick = (id: Job) => setSelectedJob(id);
+
   return (
-    <div>
-      <ul className='w-screen flex-wrap gap-8 items-start content-center flex justify-center py-16'>
+    <div className='flex justify-center py-16 text-sm'>
+      <ul className='w-[30%] flex-wrap gap-8 items-start content-center flex'>
         {jobs.map((job) => {
           return (
-            <li key={job.job_id}>
+            <li className='cursor-pointer' key={job.job_id} onClick={()=> handleClick(job)}>
               <JobCard job={job} />
             </li>
           )
         })}
       </ul>
+      { selectedJob &&
+        <div className='mx-8 my-4 w-[50%]'>
+          <JobDetailCard job={selectedJob}/>
+        </div>
+      }
     </div>
   )
 }
