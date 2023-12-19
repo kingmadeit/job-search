@@ -3,4 +3,12 @@ import JobList from "./JobList";
 import JobCard from "./JobCard";
 import NoResultsFound from "./NoResultsFound";
 import JobDetailCard from "./JobDetailCard";
-export { Search, JobList, JobCard, JobDetailCard, NoResultsFound }
+import CompanyCard from "./CompanyCard";
+export { 
+  Search, 
+  JobList, 
+  JobCard, 
+  JobDetailCard, 
+  NoResultsFound, 
+  CompanyCard 
+}

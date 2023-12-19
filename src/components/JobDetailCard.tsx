@@ -1,5 +1,8 @@
 import React from "react";
 import { Job } from "../types/searchResults";
+import { LuExternalLink } from "react-icons/lu";
+import CompanyCard from "./CompanyCard";
+import { ICompanyCard } from "../types/company";
 
 const benefits = (benefits: string[]) => {
   return (
@@ -39,7 +42,7 @@ const bulletList = (list: string[], title?: string) => {
         {list.map(
           (item) => {
             return (
-              <li>{item}</li>
+              <li key={item}>{item}</li>
             )
           }
         )}
@@ -69,9 +72,16 @@ const JobDetailCard = ({ job }: { job: Job }) => {
         after:h-full">
       </div>
       <div className="p-4 flex flex-col gap-4">
-        <h1 className="font-bold text-lg capitalize">{job.job_title}</h1>
-        <a href={job.employer_website ?? ''} target="_blank">{job.employer_name}</a>
-        <h4>{job.job_state}, {job.job_country}</h4>
+        <CompanyCard company={
+          {
+            name: job.employer_name,
+            city: job.job_city,
+            state: job.job_state,
+            country: job.job_country,
+            url: job.employer_website,
+            job_title: job.job_title
+          } as ICompanyCard
+        } />
         {!!job.job_description && description(job.job_description)}
         {!!job.job_highlights?.Responsibilities?.length && bulletList(job.job_highlights.Responsibilities, 'Responsibilities')}
         {!!job.job_highlights?.Qualifications?.length && bulletList(job.job_highlights.Qualifications, 'Qualifications')}
