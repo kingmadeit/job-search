@@ -69,7 +69,10 @@ const JobDetailCard = ({ job }: { job: Job }) => {
         relative after:content[''] 
         after:absolute 
         after:w-full 
-        after:h-full">
+        after:h-full"
+        
+        style={{filter: 'grayscale(2)'}}
+        >
       </div>
       <div className="p-4 flex flex-col gap-4">
         <CompanyCard company={
@@ -81,7 +84,7 @@ const JobDetailCard = ({ job }: { job: Job }) => {
             url: job.employer_website,
             job_title: job.job_title
           } as ICompanyCard
-        } />
+        }/>
         {!!job.job_description && description(job.job_description)}
         {!!job.job_highlights?.Responsibilities?.length && bulletList(job.job_highlights.Responsibilities, 'Responsibilities')}
         {!!job.job_highlights?.Qualifications?.length && bulletList(job.job_highlights.Qualifications, 'Qualifications')}

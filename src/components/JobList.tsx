@@ -13,7 +13,7 @@ const JobList = ({jobs}: {jobs: Job[] | []}) => {
       <ul className='w-[30%] flex-wrap gap-8 items-start content-center flex'>
         {jobs.map((job) => {
           return (
-            <li className='cursor-pointer' key={job.job_id} onClick={()=> handleClick(job)}>
+            <li className='cursor-pointer w-full' key={job.job_id} onClick={()=> handleClick(job)}>
               <JobCard job={job} />
             </li>
           )

@@ -22,9 +22,10 @@ export default {
       circle: 'circle',
     },
     fontSize: {
-      xs: ['10px', '16px'],
+      xxs: ['10px', '14px'],
+      xs: ['12px', '16px'],
       sm: ['14px', '20px'],
-      base: ['16px', '24px'],
+      md: ['16px', '24px'],
       lg: ['20px', '28px'],
       xl: ['24px', '32px'],
       xxl: ['32px', '40px'],
