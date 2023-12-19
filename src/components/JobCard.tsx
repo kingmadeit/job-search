@@ -1,10 +1,9 @@
 import React from 'react'
 import { Job } from '../types/searchResults'
-import { IoBusinessOutline } from "react-icons/io5";
-import { GrLocation } from "react-icons/gr";
 import { FaRegClock } from "react-icons/fa6";
 import CompanyCard from './CompanyCard';
 import { ICompanyCard } from '../types/company';
+import { currencyFormatter, daysAgo } from '../helpers';
 
 const JobCard = (props: {job: Job }) => {
   const { job } = props;
@@ -23,13 +22,24 @@ const JobCard = (props: {job: Job }) => {
         } size='md'/>
         <div className="lowercase text-sm pt-4 pb-2">
           <span className="inline-block bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-lightslategrey mr-2 mb-2">{job.job_employment_type}</span>
-          <span className="inline-block bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-lightslategrey mr-2 mb-2">#travel</span>
-          <span className="inline-block bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-lightslategrey mr-2 mb-2">#winter</span>
+          {
+            job.job_min_salary && job.job_max_salary && <span className="inline-block bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-lightslategrey mr-2 mb-2">
+              {currencyFormatter(job.job_min_salary!)}
+              - 
+              {currencyFormatter(job.job_max_salary!)}
+            </span>
+          }
+          {job.job_is_remote && <span className="inline-block bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-lightslategrey mr-2 mb-2">remote</span>}
         </div>
         {/* <p className="truncate text-sm text-gray-400 max-h-[150px]">
           {job.job_description}
         </p> */}
-        <span className='text-xxs flex gap-1 text-gray-400 items-center leading-[unset]'><FaRegClock />Posted 30 days ago</span>
+        { !!job.job_posted_at_datetime_utc &&
+          <span className='text-xxs flex gap-1 text-gray-400 items-center leading-[unset]'><FaRegClock />Posted {daysAgo(
+            job.job_posted_at_datetime_utc as string,
+            new Date().toISOString()
+          )} days ago</span>
+        }
       </div>
     </div>
   )
