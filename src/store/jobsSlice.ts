@@ -3,11 +3,12 @@ import { SEARCH_API_URL, API_HOST, API_KEY } from '../constants/api-credentials'
 import axios, { AxiosRequestConfig } from "axios";
 import { Job, SearchParameters } from "../types/searchResults";
 import { updateSearchParams } from "./searchSlice";
-
+import { dummyResponse } from "../constants/data";
 interface JobsSliceState {
   jobs: Job[]
   status: 'idle' | 'loading' | 'succeeded' | 'failed',
-  error: string | undefined
+  error: string | undefined,
+  isTesting?: boolean;
 }
 
 let options: AxiosRequestConfig  = {
@@ -19,10 +20,20 @@ let options: AxiosRequestConfig  = {
   },
 };
 
+
+///::::::::::::: TESTING ::: NUKE THIS ::::::::::::::///
+const dummyData: Promise<Job[]> = new Promise((resolve, reject) => resolve(dummyResponse.data));
+
+
 export const getJobs = createAsyncThunk('jobs/getJobs', async (params: SearchParameters) => {
   try {
-    const res = await axios.get(`${SEARCH_API_URL}`, {...options, params});
-    return res.data;
+    //::: REAL API CALL
+    // const res = await axios.get(`${SEARCH_API_URL}`, {...options, params});
+    // return res.data;
+
+    //::: TEST DATA
+    const data = await dummyData;
+    return data;
   } catch (error: any) {
     return error.message
   }
@@ -41,6 +52,7 @@ const jobsSlice = createSlice({
   initialState,
   reducers: {
     // getJobs: (state, { payload }) => state.jobs = payload
+    setIsTesting: (state, {payload}) => { state.isTesting = payload }
   },
   extraReducers: (builder) => {
     builder
@@ -61,7 +73,7 @@ const jobsSlice = createSlice({
         state.error = payload;
       } else {
         state.status = 'succeeded';
-        state.jobs = payload.data; // here payload has pagination info
+        state.jobs = state.isTesting? payload : payload.data; // here payload has pagination info
         state.error = undefined;
       }
     })
@@ -72,4 +84,5 @@ const jobsSlice = createSlice({
   }
 });
 
+export const { setIsTesting } = jobsSlice.actions;
 export default jobsSlice.reducer
