@@ -1,6 +1,6 @@
 import Lottie from "lottie-react";
 import { Search, JobList, NoResultsFound } from '../../components';
-import { getJobs } from '../../store/jobsSlice';
+import { getJobs, setIsTesting } from '../../store/jobsSlice';
 import { hiringAnimation,searchAnimation } from '../../assets/index';
 import { TSearchParam } from '../../types/search';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
@@ -39,8 +39,12 @@ const Home = () => {
     const params: SearchParameters = buildParams(_params) as SearchParameters;
     if (!!params.query.trim() && apiStatus === 'idle') {
       try {
+        //::: uncomment below to test. comment out `prod code` below
+        dispatch(setIsTesting(true));
         await dispatch(getJobs(params));
-        console.table({apiError, apiStatus})
+        //::: prod code
+        // await dispatch(getJobs(params));
+        // console.table({apiError, apiStatus})
       } catch (error) {
         console.log(error)
       }
@@ -54,7 +58,7 @@ const Home = () => {
   return (
     <div className='p-16 content-center w-screen min-h-screen flex flex-col items-center content-center'>
       <h1 className='text-6xl text-lightskyblue'>Career Hub </h1>
-      <h4 className='py-1 text-gray-400'>Looking for a new career?</h4>
+      <h4 className='pb-8 text-gray-400'>Looking for a new career?</h4>
       <Search onSubmit={handleSearch}/>
       <div>
         {getContent()}
